@@ -37,12 +37,15 @@ public class PlayerController : MonoBehaviour
         RotatePlayer(x, y, z);
         Jump();
 
+        // Magnitude of input (Pythagorean Theorem).
         float input = Mathf.Sqrt(Mathf.Pow(x, 2) + Mathf.Pow(z, 2));
 
+        // Find vector of movement relative to camera.
         Vector3 inputDirection = Quaternion.Euler(0, y, 0) * new Vector3(x, 0, z).normalized * input;
         Vector3 verticalSpeed = new Vector3(0, velocityY, 0);
         Vector3 playerMove = inputDirection + verticalSpeed;
 
+        // Move character.
         characterController.Move(playerMove * speed * Time.deltaTime);
     }
 
@@ -50,11 +53,15 @@ public class PlayerController : MonoBehaviour
     {
         if(x != 0 || z != 0)
         {
+            // Find angle of player input.
             float rotationY = Mathf.Atan2(x, z) * Mathf.Rad2Deg;
             
+            // Sum input with camera rotation to make player input relative to camera.
             float targetAngle = rotationY += y;
+            // Smoothly turn character in input direction.
             float currentAngle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, rotateSpeed * Time.deltaTime);
 
+            // Rotates character.
             transform.rotation = Quaternion.Euler(0, currentAngle, 0);
         }
     }
@@ -88,7 +95,7 @@ public class PlayerController : MonoBehaviour
     {
         if(!grounded)
         {
-            velocityY -= gravity * Time.deltaTime;
+            velocityY += gravity * Time.deltaTime;
         }
     }
 }
