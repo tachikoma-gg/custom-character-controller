@@ -6,47 +6,19 @@ using UnityEngine.UIElements;
 public class CameraFollow : MonoBehaviour
 {
     [SerializeField] private GameObject player;
-    [SerializeField] private float distanceMin, distanceMax;
+    [SerializeField] private float targetDistance;
     [SerializeField] private float smoothness;
-
-    private float targetSpeed;
-    private float currentSpeed;
+    [SerializeField] private float cameraHeight;
 
     void LateUpdate()
     {
-        MoveAnchor();
-    }
+        float x = transform.position.x - player.transform.position.x;
+        float y = player.transform.position.y + cameraHeight;
+        float z = transform.position.z - player.transform.position.z;
 
-    void MoveAnchor()
-    {
-        float distance = Vector3.Distance(player.transform.position, transform.position);
+        Vector3 direction = new Vector3(x, y, z);
+        Vector3 targetPosition = direction.normalized * targetDistance + player.transform.position;
 
-        if(distance > distanceMax)
-        {
-            targetSpeed = player.GetComponent<PlayerController>().speed;
-            currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, smoothness * Time.deltaTime);
-        }
-        else if(distance < distanceMin)
-        {
-            targetSpeed = -1 * player.GetComponent<PlayerController>().speed;
-            currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, smoothness * Time.deltaTime);
-        }
-        else
-        {
-            targetSpeed = 0;
-            currentSpeed = 0;
-        }
-
-        transform.LookAt(player.transform.position);
-        transform.Translate(Vector3.forward * currentSpeed * Time.deltaTime);
-    }
-
-    void GroundDetect()
-    {
-        float distance = Vector3.Distance(transform.position, player.transform.position);
-
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hitData;
-        Physics.Raycast(ray, out hitData);
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
     }
 }
