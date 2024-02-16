@@ -1103,7 +1103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19813fd0a07a0584c93b0d432c6d47aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTargetTransform: {fileID: 1584089474}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1116,7 +1115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b7b161570288c4e8e0e173a7f216b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1473889467}
   targetDistance: 8
   smoothness: 3
   cameraHeight: 4
@@ -1346,8 +1344,8 @@ GameObject:
   - component: {fileID: 1473889469}
   - component: {fileID: 1473889474}
   - component: {fileID: 1473889473}
-  - component: {fileID: 1473889475}
   - component: {fileID: 1473889476}
+  - component: {fileID: 1473889475}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1512,10 +1510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 7
   jumpVelocity: 2
-  gravity: 9
   rotateSpeed: 15
-  characterController: {fileID: 1473889474}
-  playerCamera: {fileID: 963194225}
 --- !u!135 &1473889476
 SphereCollider:
   m_ObjectHideFlags: 0

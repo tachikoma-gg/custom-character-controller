@@ -7,14 +7,20 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private float jumpVelocity;
-    [SerializeField] private float gravity;
     [SerializeField] private float rotateSpeed;
 
-    [SerializeField] private CharacterController characterController;
-    [SerializeField] private GameObject playerCamera;
+    private CharacterController characterController;
+    private GameObject playerCamera;
 
     private bool grounded;
     private float velocityY;
+    private readonly float gravity = -9.8f;
+
+    void Start()
+    {
+        characterController = GetComponent<CharacterController>();
+        playerCamera = FindObjectOfType<CameraFollow>().gameObject;
+    }
 
     void Update()
     {

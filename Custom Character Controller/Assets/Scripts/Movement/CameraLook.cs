@@ -5,7 +5,12 @@ using UnityEngine;
 
 public class CameraLook : MonoBehaviour
 {
-    [SerializeField] private Transform cameraTargetTransform;
+    private Transform cameraTargetTransform;
+
+    void Start()
+    {
+        cameraTargetTransform = GameObject.Find("Camera Target").transform;
+    }
 
     void LateUpdate()
     {

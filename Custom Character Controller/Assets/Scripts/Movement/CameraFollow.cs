@@ -5,10 +5,16 @@ using UnityEngine.UIElements;
 
 public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    private GameObject player;
+
     [SerializeField] private float targetDistance;
     [SerializeField] private float smoothness;
     [SerializeField] private float cameraHeight;
+
+    void Start()
+    {
+        player = FindObjectOfType<PlayerController>().gameObject;
+    }
 
     void LateUpdate()
     {
