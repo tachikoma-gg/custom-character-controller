@@ -8,10 +8,7 @@ public class CameraTargetHeight : MonoBehaviour
     [SerializeField] private float smoothness;
     [SerializeField] private GameObject player;
 
-    void LateUpdate()
-    {
-        CameraHeight();
-    }
+    void LateUpdate() => CameraHeight();
 
     void CameraHeight()
     {

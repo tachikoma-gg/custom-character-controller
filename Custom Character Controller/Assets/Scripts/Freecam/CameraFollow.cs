@@ -5,18 +5,12 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    private GameObject player;
-    private GameObject cameraTarget;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject cameraTarget;
 
     [SerializeField] private float targetDistance;
     [SerializeField] private float smoothness;
     [SerializeField] private float cameraHeight;
-
-    void Start()
-    {
-        player = FindObjectOfType<PlayerController>().gameObject;
-        cameraTarget = FindObjectOfType<CameraTargetHeight>().gameObject;
-    }
 
     void LateUpdate()
     {
@@ -27,29 +21,55 @@ public class CameraFollow : MonoBehaviour
         float y = CameraHeight();
         float z = transform.position.z - playerZ;
 
-        // Find direction from player towards camera.
         Vector3 direction = new Vector3(x, 0, z);
-        // Define player position minus height;
         Vector3 playerPosition = new Vector3(playerX, 0, playerZ);
-        // Move camera to targetDistance away from player in that direction.
         Vector3 targetPosition = direction.normalized * targetDistance + playerPosition + new Vector3(0, y, 0);
 
-        // Smoothly move camera towards targetPosition.
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
-
-        // Point camera towards cameraTarget, which is a point above the player.
         transform.LookAt(cameraTarget.transform.position);
     }
 
     float CameraHeight()
     {
+        Vector3 ground = GroundDetect();
+        // Vector3 ceiling = CeilingDetect(ground);
+
+        float y = ground.y + cameraHeight;
+
+        /*
+        if(ceiling != null && ceiling.y > cameraHeight)
+        {
+            y = cameraHeight;
+        }
+        else if(ceiling != null && ceiling.y < cameraHeight)
+        {
+            y = ceiling.y;
+        }
+        */
+
+        return y;
+    }
+
+    Vector3 GroundDetect()
+    {
         float x = transform.eulerAngles.x;
-        Ray ray = new Ray(transform.position, Quaternion.Euler(x, 0, 0) * Vector3.down);    // Need to calculate world down, not camera down.
+        Ray ray = new Ray(transform.position, Quaternion.Euler(x, 0, 0) * Vector3.down);
         RaycastHit hitData;
         Physics.Raycast(ray, out hitData);
 
-        float y = hitData.point.y + cameraHeight;
+        return hitData.point;
+    }
 
-        return y;
+    Vector3 CeilingDetect(Vector3 ground)
+    {
+        float x = transform.eulerAngles.x;
+        Vector3 offset = new Vector3(0, 0.1f, 0);
+        Ray ray = new Ray(ground + offset, Vector3.up);
+        RaycastHit hitData;
+        Physics.Raycast(ray, out hitData);
+
+        Debug.Log(hitData.transform.gameObject.name);
+
+        return hitData.point;
     }
 }
