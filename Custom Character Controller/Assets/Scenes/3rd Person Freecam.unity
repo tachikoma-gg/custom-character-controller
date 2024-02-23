@@ -1512,9 +1512,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1473889467}
   cameraTarget: {fileID: 1584089473}
-  targetDistance: 8
+  targetDistance: 5
   smoothness: 10
-  cameraHeight: 5
+  cameraHeight: 3
 --- !u!1 &1187968159
 GameObject:
   m_ObjectHideFlags: 0

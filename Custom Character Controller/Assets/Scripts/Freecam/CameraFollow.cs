@@ -12,6 +12,11 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private float smoothness;
     [SerializeField] private float cameraHeight;
 
+    void Update()
+    {
+        ResetCamera();
+    }
+
     void LateUpdate()
     {
         float playerX = player.transform.position.x;
@@ -34,7 +39,9 @@ public class CameraFollow : MonoBehaviour
         Vector3 ground = GroundDetect();
         Vector3 ceiling = CeilingDetect(ground);
 
-        float y = (ceiling.y == 0 && ceiling.y < (ground.y + cameraHeight)) ? (ground.y + cameraHeight) : ceiling.y;
+        float groundHeight = (ground.y + 1 < player.transform.position.y) ? ground.y : player.transform.position.y; 
+
+        float y = (ceiling.y == 0 && ceiling.y < (ground.y + cameraHeight)) ? (groundHeight + cameraHeight) : ceiling.y;
 
         return y;
     }
@@ -59,5 +66,13 @@ public class CameraFollow : MonoBehaviour
         Physics.Raycast(ray, out hitData, 5);
 
         return hitData.point;
+    }
+
+    void ResetCamera()
+    {
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            // rotate around player to get behind player.
+        }
     }
 }
