@@ -32,7 +32,9 @@ public class CameraFollow : MonoBehaviour
     float CameraHeight()
     {
         Vector3 ground = GroundDetect();
-        float y = ground.y + cameraHeight;
+        Vector3 ceiling = CeilingDetect(ground);
+
+        float y = (ceiling.y == 0 && ceiling.y < (ground.y + cameraHeight)) ? (ground.y + cameraHeight) : ceiling.y;
 
         return y;
     }
@@ -40,7 +42,8 @@ public class CameraFollow : MonoBehaviour
     Vector3 GroundDetect()
     {
         float x = transform.eulerAngles.x;
-        Ray ray = new Ray(transform.position, Quaternion.Euler(x, 0, 0) * Vector3.down);
+        Vector3 origin = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+        Ray ray = new Ray(origin, Quaternion.Euler(x, 0, 0) * Vector3.down);
         RaycastHit hitData;
         Physics.Raycast(ray, out hitData);
 
@@ -50,12 +53,10 @@ public class CameraFollow : MonoBehaviour
     Vector3 CeilingDetect(Vector3 ground)
     {
         float x = transform.eulerAngles.x;
-        Vector3 offset = new Vector3(0, 0.1f, 0);
-        Ray ray = new Ray(ground + offset, Vector3.up);
+        Vector3 origin = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+        Ray ray = new Ray(origin, Quaternion.Euler(x, 0, 0) * Vector3.up);
         RaycastHit hitData;
-        Physics.Raycast(ray, out hitData);
-
-        Debug.Log(hitData.transform.gameObject.name);
+        Physics.Raycast(ray, out hitData, 5);
 
         return hitData.point;
     }
