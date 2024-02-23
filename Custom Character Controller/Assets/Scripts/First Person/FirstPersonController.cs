@@ -26,6 +26,12 @@ public class FirstPersonController : MonoBehaviour
 
     [SerializeField] private Vector3 offset;
 
+    void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     void Update()
     {
         RotatePlayer();

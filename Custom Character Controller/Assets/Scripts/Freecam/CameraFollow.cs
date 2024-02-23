@@ -32,20 +32,7 @@ public class CameraFollow : MonoBehaviour
     float CameraHeight()
     {
         Vector3 ground = GroundDetect();
-        // Vector3 ceiling = CeilingDetect(ground);
-
         float y = ground.y + cameraHeight;
-
-        /*
-        if(ceiling != null && ceiling.y > cameraHeight)
-        {
-            y = cameraHeight;
-        }
-        else if(ceiling != null && ceiling.y < cameraHeight)
-        {
-            y = ceiling.y;
-        }
-        */
 
         return y;
     }
