@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider collider)
+    void OnTriggerStay(Collider collider)
     {
         if(collider.gameObject.layer == groundLayer)
         {

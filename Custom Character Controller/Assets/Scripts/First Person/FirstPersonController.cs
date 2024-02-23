@@ -88,7 +88,7 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider collider)
+    void OnTriggerStay(Collider collider)
     {
         if(collider.gameObject.layer == groundLayer)
         {
