@@ -10,38 +10,68 @@ public class CameraFollow : MonoBehaviour
 
     [SerializeField] private float targetDistance;
     [SerializeField] private float smoothness;
-    [SerializeField] private float cameraHeight;
+    [SerializeField] private float rotationSpeed;
+    [SerializeField] private float cameraHeightDefault;
+    [SerializeField] private float rayLength;
+    [SerializeField] private float cameraHeightMax;
+    [SerializeField] private float cameraHeightMin;
+
+    private float cameraHeight;
+
+    void Start()
+    {
+        cameraHeight = cameraHeightDefault;
+    }
 
     void Update()
     {
         ResetCamera();
+        RotateCamera();
     }
 
     void LateUpdate()
     {
-        float playerX = player.transform.position.x;
-        float playerZ = player.transform.position.z;
+        Follow();
+    }
 
-        float x = transform.position.x - playerX;
-        float y = CameraHeight();
-        float z = transform.position.z - playerZ;
+    void Follow()
+    {
+        float x = transform.position.x - player.transform.position.x;
+        float y = CameraHeight() - player.transform.position.y;
+        float z = transform.position.z - player.transform.position.z;
 
         Vector3 direction = new Vector3(x, 0, z);
-        Vector3 playerPosition = new Vector3(playerX, 0, playerZ);
+        Vector3 playerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
         Vector3 targetPosition = direction.normalized * targetDistance + playerPosition + new Vector3(0, y, 0);
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
         transform.LookAt(cameraTarget.transform.position);
     }
 
+    void RotateCamera()
+    {
+        float inputX = Input.GetAxis("Horizontal_2");
+        float rotate = rotationSpeed * inputX * Time.deltaTime;
+
+        transform.RotateAround(cameraTarget.transform.position, Vector3.up, rotate);
+    }
+
     float CameraHeight()
     {
+        // Need to redo this.
+
+        float inputY = Input.GetAxis("Vertical_2");
+        cameraHeight -= inputY * Time.deltaTime * 15;
+
         Vector3 ground = GroundDetect();
-        Vector3 ceiling = CeilingDetect(ground);
+        Vector3 ceiling = CeilingDetect();
 
-        float groundHeight = (ground.y + 1 < player.transform.position.y) ? ground.y : player.transform.position.y; 
+        float heightMax = (ceiling.y < player.transform.position.y + cameraHeightMax && ceiling.y != 0) ? ceiling.y : (player.transform.position.y + cameraHeightMax);
+        float heightMin = (ground.y > player.transform.position.y + cameraHeightMin) ? ground.y : (player.transform.position.y + cameraHeightMin);
 
-        float y = (ceiling.y == 0 && ceiling.y < (ground.y + cameraHeight)) ? (groundHeight + cameraHeight) : ceiling.y;
+        cameraHeight = Mathf.Clamp(cameraHeight, player.transform.position.y + heightMin, player.transform.position.y + heightMax);
+
+        float y = cameraHeight;
 
         return y;
     }
@@ -49,21 +79,20 @@ public class CameraFollow : MonoBehaviour
     Vector3 GroundDetect()
     {
         float x = transform.eulerAngles.x;
-        Vector3 origin = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
-        Ray ray = new Ray(origin, Quaternion.Euler(x, 0, 0) * Vector3.down);
-        RaycastHit hitData;
-        Physics.Raycast(ray, out hitData);
+        Vector3 origin = new(transform.position.x, player.transform.position.y, transform.position.z);
+        Ray ray = new(origin, Quaternion.Euler(x, 0, 0) * Vector3.down);
+        Physics.Raycast(ray, out RaycastHit hitData);
 
         return hitData.point;
     }
 
-    Vector3 CeilingDetect(Vector3 ground)
+    Vector3 CeilingDetect()
     {
         float x = transform.eulerAngles.x;
-        Vector3 origin = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
-        Ray ray = new Ray(origin, Quaternion.Euler(x, 0, 0) * Vector3.up);
-        RaycastHit hitData;
-        Physics.Raycast(ray, out hitData, 5);
+        Vector3 origin = new(transform.position.x, player.transform.position.y, transform.position.z);
+
+        Ray ray = new(origin, Quaternion.Euler(x, 0, 0) * Vector3.up);
+        Physics.Raycast(ray, out RaycastHit hitData, rayLength);
 
         return hitData.point;
     }

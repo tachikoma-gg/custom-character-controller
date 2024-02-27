@@ -66,7 +66,7 @@ public class FirstPersonController : MonoBehaviour
         float input = Mathf.Sqrt(Mathf.Pow(x, 2) + Mathf.Pow(z, 2));
 
         Vector3 inputDirection = Quaternion.AngleAxis(y, Vector3.up) * new Vector3(x, 0, z).normalized * input;
-        Vector3 verticalSpeed = new Vector3(0, velocityY, 0);
+        Vector3 verticalSpeed = new(0, velocityY, 0);
         Vector3 playerMove = inputDirection + verticalSpeed;
 
         characterController.Move(speed * Time.deltaTime * playerMove);
