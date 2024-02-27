@@ -15,13 +15,9 @@ public class CameraRotate : MonoBehaviour
     [SerializeField] private float rotationX_Min;
     [SerializeField] private Vector3 rotationDefault;
 
-    private float distanceCurrent;
-    private Vector3 rotationCurrent;
+    [SerializeField] private LayerMask ignoreRaycast;
 
-    void Start()
-    {
-        rotationCurrent = rotationDefault;
-    }
+    [SerializeField] private GameObject marker;
 
     void LateUpdate()
     {
@@ -49,21 +45,22 @@ public class CameraRotate : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.transform.position);
         Vector3 direction = transform.position - player.transform.position;
 
-        Vector3 origin = player.transform.position;
-        Ray ray = new Ray(origin, direction);
+        Ray ray = new Ray(player.transform.position, direction);
+        Physics.Raycast(ray, out RaycastHit hitData, distanceDefault);
 
-        if(distance > distanceTarget)
+        float hitDistance = Vector3.Distance(hitData.point, player.transform.position);
+
+        marker.transform.position = hitData.point;
+
+        Debug.Log(direction);
+
+        if(distance > distanceDefault)
         {
-            float targetPosition = transform.position + direction.normalized * distanceTarget;
-        }
+            float distanceTarget = (hitData.point.y != 0 && hitDistance < distanceDefault) ? hitDistance : distanceDefault;
 
-    }
+            Vector3 targetPosition = player.transform.position + direction.normalized * distanceTarget;
 
-    void ResetCamera()
-    {
-        if(Input.GetKeyDown(KeyCode.Q))
-        {
-            rotationCurrent = rotationDefault;
+            transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
         }
     }
 }
