@@ -1469,7 +1469,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.112822205, y: -0, z: -0, w: 0.99361527}
-  m_LocalPosition: {x: 0, y: 5, z: -8}
+  m_LocalPosition: {x: 0, y: 7.02, z: -10.85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1510,7 +1510,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1473889467}
   cameraTarget: {fileID: 1584089473}
-  distanceDefault: 0
+  distanceDefault: 8
   smoothness: 10
   rotationSpeed: 180
   rotationX_Max: 85
@@ -1519,7 +1519,6 @@ MonoBehaviour:
   ignoreRaycast:
     serializedVersion: 2
     m_Bits: 4
-  marker: {fileID: 1343130167}
 --- !u!1 &1187968159
 GameObject:
   m_ObjectHideFlags: 0
@@ -2148,7 +2147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ecf12b7fcfc6fe4a90286e86d88426e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 2
+  height: 2.5
   smoothness: 1
   player: {fileID: 1473889467}
 --- !u!1 &1668511520

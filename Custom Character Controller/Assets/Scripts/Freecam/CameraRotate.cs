@@ -17,8 +17,6 @@ public class CameraRotate : MonoBehaviour
 
     [SerializeField] private LayerMask ignoreRaycast;
 
-    [SerializeField] private GameObject marker;
-
     void LateUpdate()
     {
         RotateCamera();
@@ -34,32 +32,17 @@ public class CameraRotate : MonoBehaviour
         Vector3 axis = Quaternion.Euler(0, transform.eulerAngles.y, 0) * new Vector3(-x, -y, 0);
 
         transform.RotateAround(player.transform.position, axis, input * rotationSpeed * Time.deltaTime);
-
-        // Clamp rotation to prevent jitter at x = 90 or x = -90.
-
         transform.LookAt(cameraTarget.transform.position);
     }
 
     void MoveCamera()
     {
-        float distance = Vector3.Distance(transform.position, player.transform.position);
-        Vector3 direction = transform.position - player.transform.position;
+        float distance = Vector3.Distance(transform.position, cameraTarget.transform.position);
+        Vector3 direction = transform.position - cameraTarget.transform.position;
 
-        Ray ray = new Ray(player.transform.position, direction);
-        Physics.Raycast(ray, out RaycastHit hitData, distanceDefault);
-
-        float hitDistance = Vector3.Distance(hitData.point, player.transform.position);
-
-        marker.transform.position = hitData.point;
-
-        Debug.Log(direction);
-
-        if(distance > distanceDefault)
+        if(distance != distanceDefault)
         {
-            float distanceTarget = (hitData.point.y != 0 && hitDistance < distanceDefault) ? hitDistance : distanceDefault;
-
-            Vector3 targetPosition = player.transform.position + direction.normalized * distanceTarget;
-
+            Vector3 targetPosition = cameraTarget.transform.position + direction.normalized * distanceDefault;
             transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
         }
     }
