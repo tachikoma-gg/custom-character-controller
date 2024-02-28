@@ -17,10 +17,14 @@ public class CameraRotate : MonoBehaviour
 
     [SerializeField] private LayerMask ignoreRaycast;
 
+    void Update()
+    {
+        MoveCamera();
+    }
+
     void LateUpdate()
     {
         RotateCamera();
-        MoveCamera();
     }
 
     void RotateCamera()
@@ -37,13 +41,13 @@ public class CameraRotate : MonoBehaviour
 
     void MoveCamera()
     {
-        float distance = Vector3.Distance(transform.position, cameraTarget.transform.position);
-        Vector3 direction = transform.position - cameraTarget.transform.position;
+        float x = transform.position.x - player.transform.position.x;
+        float y = transform.position.y;
+        float z = transform.position.z - player.transform.position.z;
 
-        if(distance != distanceDefault)
-        {
-            Vector3 targetPosition = cameraTarget.transform.position + direction.normalized * distanceDefault;
-            transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
-        }
+        Vector3 direction = new Vector3(x, y, z).normalized;
+        Vector3 targetPosition = direction * distanceDefault + player.transform.position;
+
+        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
     }
 }
