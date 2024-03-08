@@ -1,47 +1,50 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MovePlayer : MonoBehaviour
 {
-    private CharacterController controller;
+    private CharacterController characterController;
     private GameObject cam;
 
     [SerializeField] private float speed;
     [SerializeField] private float jump;
+    [SerializeField] private float smoothness;
+    [SerializeField] private float slideMultiplier;
 
-    private float gravity = -20f;
-    private float velocity;
+    private readonly float gravity = -20f;
 
-    float x;
-    float z;
+    private float currentAngle;
+
+    private Vector3 velocity;
+    private Vector3 input;
 
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        characterController = GetComponent<CharacterController>();
         cam = FindObjectOfType<MoveCamera>().gameObject;
     }
 
     void Update()
     {
-        x = Input.GetAxis("Horizontal");
-        z = Input.GetAxis("Vertical");
+        input.x = Input.GetAxis("Horizontal");
+        input.z = Input.GetAxis("Vertical");
 
-        Vector3 input = new Vector3(x, 0, z) * speed;
-
-        velocity = (controller.isGrounded && velocity <= 1) ? -0.5f : velocity + gravity * Time.deltaTime;
-
-        if(input.magnitude != 0)
+        if(input.x != 0 || input.z != 0)                                      // only rotate if there's an input.
         {
-            float rotationY = Mathf.Atan2(x, z) * Mathf.Rad2Deg;
-            float targetAngle = rotationY + cam.transform.eulerAngles.y;
-            transform.rotation = Quaternion.Euler(0, targetAngle, 0);
+            float direction = Mathf.Atan2(input.x, input.z) * Mathf.Rad2Deg;  // what angle is input towards.
+            float targetAngle = direction + cam.transform.eulerAngles.y;      // account for direction camera is facing
+            currentAngle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, smoothness * Time.deltaTime);
+
+            transform.rotation = Quaternion.Euler(0, currentAngle, 0);         // rotate player to face direction of movement.
         }
-        
-        velocity = (Input.GetKeyDown(KeyCode.Space) && controller.isGrounded) ? jump : velocity;
 
-        Vector3 move = Quaternion.Euler(0, cam.transform.eulerAngles.y, 0) * input + new Vector3(0, velocity, 0);
+        // calculate vertical velocity from gravity & jump
+        velocity.y = (characterController.isGrounded && velocity.y <= 1) ? -0.5f : (velocity.y + gravity * Time.deltaTime);
+        velocity.y = (Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded) ? jump : velocity.y;
 
-        controller.Move(Time.deltaTime * move);
+        Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
+        Vector3 move = rotation * Vector3.forward * input.magnitude * speed + velocity;    
+
+        // move character 
+        characterController.Move(Time.deltaTime * move);
     }
 }

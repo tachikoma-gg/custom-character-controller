@@ -19,6 +19,7 @@ public class TopDownCameraFollow : MonoBehaviour
         
         Vector3 targetPosition = player.transform.position + cameraOffset + offsetAdjustment;
         transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
+        transform.LookAt(player.transform.position);
 
         // transform.position = player.transform.position + cameraOffset;
     }
