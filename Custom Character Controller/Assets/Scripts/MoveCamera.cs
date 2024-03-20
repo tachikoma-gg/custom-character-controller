@@ -5,44 +5,70 @@ using UnityEngine;
 public class MoveCamera : MonoBehaviour
 {
     [SerializeField] private GameObject player;
-    [SerializeField] private float targetDistance;
-    [SerializeField] private Vector3 offset;
-    [SerializeField] private Vector3 targetOffset;
-    [SerializeField] private float height;
+    [SerializeField] private float cameraDistanceInitial;
+    [SerializeField] private float cameraDistanceMax;
+    [SerializeField] private float cameraAngleInitial;
 
-    private float smoothness = 10;
+    private float cameraDistance;
+    private Vector3 cameraAngle;
+
+    [SerializeField] private GameObject cameraTarget;
+
+    [SerializeField] private float rotateSpeed;
+    [SerializeField] private float scrollSpeed;
+
+    private Vector3 mouseInput;
+
+    private bool _lockState;
+    public bool lockState
+    {
+        get
+        {
+            return _lockState;
+        }
+    }
+
+    void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        cameraDistance = cameraDistanceInitial;
+        cameraAngle.x = cameraAngleInitial;
+    }
 
     void LateUpdate()
     {
-        // OrbitCamera();
-        FollowPlayer();
-    }
+        mouseInput.x = Input.GetAxis("Mouse X");
+        mouseInput.y = Input.GetAxis("Mouse Y");
+        mouseInput.z = Input.mouseScrollDelta.y;
 
-    void OrbitCamera()
-    {
-        float x = Input.GetAxis("Mouse X");
-        float y = Input.GetAxis("Mouse Y");
+        // Set camera angles
+        cameraAngle.y += rotateSpeed * Time.deltaTime * mouseInput.x;
+        cameraAngle.x -= rotateSpeed * Time.deltaTime * mouseInput.y;
+        cameraAngle.x = Mathf.Clamp(cameraAngle.x, -89, 89);
 
-        float input = Mathf.Sqrt(Mathf.Pow(x, 2) + Mathf.Pow(y, 2));
-        Vector3 axis = Quaternion.Euler(0, transform.eulerAngles.y, 0) * new Vector3(-y, x, 0);
+        // Calculate camera distance
+        cameraDistance += mouseInput.z * scrollSpeed * Time.deltaTime;
+        cameraDistance = Mathf.Clamp(cameraDistance, 0, cameraDistanceMax);
 
-        transform.position = player.transform.position + Quaternion.Euler(0, transform.eulerAngles.y, 0) * offset;
-        
-        transform.RotateAround(player.transform.position, axis, smoothness * input);
-        transform.LookAt(player.transform.position);
-    }
+        // Translate & Rotate camera
+        cameraTarget.transform.rotation = Quaternion.Euler(cameraAngle.x, cameraAngle.y, 0);
+        transform.position = cameraTarget.transform.position + cameraTarget.transform.forward * -cameraDistance;
 
-    void FollowPlayer()
-    {
-        float x = transform.position.x - player.transform.position.x;
-        float z = transform.position.z - player.transform.position.z;
+        // Determine lock state
+        _lockState = (Input.GetKey(KeyCode.LeftShift) || cameraDistance == 0) ? true : false;
 
-        Vector3 direction = new Vector3(x, 0, z);
-        Vector3 playerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
-        Vector3 targetPosition = direction.normalized * targetDistance + playerPosition + new Vector3(0, height, 0);
-
-        transform.position = Vector3.Lerp(transform.position, targetPosition, smoothness * Time.deltaTime);
-
-        transform.LookAt(player.transform.position + targetOffset);
+        if(lockState)
+        {
+            // Locked camera
+            transform.rotation = Quaternion.Euler(cameraAngle.x, cameraAngle.y, 0);
+            player.transform.rotation = Quaternion.Euler(0, cameraAngle.y, 0);
+        }
+        else
+        {
+            // Free camera
+            transform.LookAt(cameraTarget.transform.position);
+        }
     }
 }

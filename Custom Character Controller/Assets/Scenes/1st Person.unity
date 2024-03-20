@@ -1881,7 +1881,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1160871879}
-  - component: {fileID: 1160871880}
   m_Layer: 0
   m_Name: Hand
   m_TagString: Untagged
@@ -1905,18 +1904,6 @@ Transform:
   - {fileID: 459093265}
   m_Father: {fileID: 876917107}
   m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
---- !u!114 &1160871880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1160871878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd33d52bbbe3bdc4a97b788f308ac078, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1187968159
 GameObject:
   m_ObjectHideFlags: 0
