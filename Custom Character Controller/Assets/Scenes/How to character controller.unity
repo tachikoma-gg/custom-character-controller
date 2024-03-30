@@ -191,7 +191,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29381c203b248c649a9bff5476a8eeed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 25
+  speed: 15
   jump: 10
   smoothness: 15
   slideMultiplier: 5
@@ -897,7 +897,7 @@ MonoBehaviour:
   cameraAngleInitial: 30
   cameraTarget: {fileID: 1292424509}
   rotateSpeed: 180
-  scrollSpeed: 20
+  scrollSpeed: 80
 --- !u!1 &1583828867
 GameObject:
   m_ObjectHideFlags: 0
@@ -996,13 +996,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1583828867}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.1662962, y: 0.17446852, z: 0.5401441, w: 0.80631924}
-  m_LocalPosition: {x: -111, y: -1.77, z: 139}
+  m_LocalRotation: {x: -0.16297889, y: 0.13861379, z: 0.6262159, w: 0.7497185}
+  m_LocalPosition: {x: -111, y: -47, z: 139}
   m_LocalScale: {x: 200.33167, y: 200.33167, z: 200.33167}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -27.171, y: 6.565, z: 66.047}
+  m_LocalEulerAnglesHint: {x: -24.707, y: 0.235, z: 79.69}
 --- !u!1 &1629328500
 GameObject:
   m_ObjectHideFlags: 0
