@@ -21,7 +21,7 @@ public class MovePlayer : MonoBehaviour
     private Vector3 move;
 
     private float inertia = 15;
-    private float airModifier = 0.05f;
+    // private float airModifier = 0.05f;
 
 
     void Start()
