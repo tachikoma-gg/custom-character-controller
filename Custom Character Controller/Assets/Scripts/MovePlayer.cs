@@ -3,7 +3,9 @@ using UnityEngine;
 public class MovePlayer : MonoBehaviour
 {
     private CharacterController characterController;
-    private GameObject cam;
+    private GameObject playerCamera;
+    private MoveCamera cameraController;
+
 
     [SerializeField] private float speed;
     [SerializeField] private float jump;
@@ -16,11 +18,17 @@ public class MovePlayer : MonoBehaviour
 
     private Vector3 velocity;
     private Vector3 input;
+    private Vector3 move;
+
+    private float inertia = 15;
+    // private float airModifier = 0.05f;
+
 
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-        cam = FindObjectOfType<MoveCamera>().gameObject;
+        cameraController = FindObjectOfType<MoveCamera>();
+        playerCamera = cameraController.gameObject;
     }
 
     void Update()
@@ -28,23 +36,44 @@ public class MovePlayer : MonoBehaviour
         input.x = Input.GetAxis("Horizontal");
         input.z = Input.GetAxis("Vertical");
 
-        if(input.x != 0 || input.z != 0)                                      // only rotate if there's an input.
-        {
-            float direction = Mathf.Atan2(input.x, input.z) * Mathf.Rad2Deg;  // what angle is input towards.
-            float targetAngle = direction + cam.transform.eulerAngles.y;      // account for direction camera is facing
-            currentAngle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, smoothness * Time.deltaTime);
+        // check for normal angle to walk down inclines.
 
-            transform.rotation = Quaternion.Euler(0, currentAngle, 0);         // rotate player to face direction of movement.
-        }
+        Ray rayDown = new Ray(transform.position, Vector3.down);
+        Physics.Raycast(rayDown, out RaycastHit hitData, 0.25f);
+        float normalY = hitData.normal.normalized.y;
 
         // calculate vertical velocity from gravity & jump
-        velocity.y = (characterController.isGrounded && velocity.y <= 1) ? -0.5f : (velocity.y + gravity * Time.deltaTime);
+        velocity.y = (characterController.isGrounded && velocity.y <= 1) ? normalY : (velocity.y + gravity * Time.deltaTime);
         velocity.y = (Input.GetKeyDown(KeyCode.Space) && characterController.isGrounded) ? jump : velocity.y;
 
-        Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
-        Vector3 move = rotation * Vector3.forward * input.magnitude * speed + velocity;    
+        if(cameraController.lockState)
+        {
+            // Combine input and velocity vectors
+            move = Quaternion.Euler(0, playerCamera.transform.eulerAngles.y, 0) * input.normalized * speed;
+        }
+        else
+        {
+            if(input.x != 0 || input.z != 0)
+            {
+                float direction = Mathf.Atan2(input.x, input.z) * Mathf.Rad2Deg;        // what angle is input towards.
+                float targetAngle = direction + playerCamera.transform.eulerAngles.y;   // account for direction camera is facing
+                currentAngle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, smoothness * Time.deltaTime);
 
-        // move character 
-        characterController.Move(Time.deltaTime * move);
+                // rotate player to face direction of movement.
+                transform.rotation = Quaternion.Euler(0, currentAngle, 0);
+            }
+
+            // Combine input and velocity vectors, correct for camera direction
+            Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
+            move = rotation * Vector3.forward * input.magnitude * speed;
+        }
+
+        float inertiaCurrent = characterController.isGrounded ? inertia : 0;
+
+        velocity.x = Mathf.Lerp(velocity.x, move.x, inertiaCurrent * Time.deltaTime);
+        velocity.z = Mathf.Lerp(velocity.z, move.z, inertiaCurrent * Time.deltaTime);
+
+        // move character
+        characterController.Move(Time.deltaTime * velocity);
     }
 }
