@@ -20,44 +20,31 @@ public class WeaponObject : MonoBehaviour
     void Start()
     {
         ammoCurrent = ammoMax;
-        Debug.Log("now listening");
-        FindObjectOfType<WeaponsController>().FireWeaponEvent += FireWeapon;
+        FindObjectOfType<WeaponsController>().FireWeaponEvent += FireWeapon; // Comment out if you're only using Line 29.
     }
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            Reload();
-        }
-
-        if(Input.GetMouseButtonDown(0))
-        {
-            // FireWeapon();
-        }
+        if(Input.GetKeyDown(KeyCode.R)) Reload();
+        // if(Input.GetMouseButtonDown(0)) FireWeapon();    // Use this if you only have one weapon. Simpler.
     }
 
     void FireWeapon()
     {
-        if(!ready || ammoCurrent <= 0)
+        // if(!ready || ammoCurrent <= 0)
+        if(!ready)
         return;
-
-        Debug.Log("Fire Weapon");
 
         ready = false;
         StartCoroutine(nameof(CooldownTimer));
 
-        ammoCurrent--;
+        // ammoCurrent--;
 
-        for (int i = 0; i < numberOfProjectiles; i++)
-        {
-            SpawnProjectile();
-        }
+        for (int i = 0; i < numberOfProjectiles; i++) SpawnProjectile();
     }
 
     IEnumerator CooldownTimer()
     {
-        Debug.Log("Start cooldown");
         yield return new WaitForSeconds(cooldownTimeSeconds);
         ready = true;
     }
@@ -70,8 +57,6 @@ public class WeaponObject : MonoBehaviour
 
     void SpawnProjectile()
     {
-        Debug.Log("spawn projectile");
-
         // redo spray pattern to make it circular.
 
         float x = transform.eulerAngles.x + Random.Range(-sprayAngle, sprayAngle);

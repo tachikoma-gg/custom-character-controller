@@ -522,10 +522,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 7166359736404755316, guid: 6ad98caa3d2db8445aecf51a1efe34c5, type: 3}
-  numberOfProjectiles: 16
-  sprayAngle: 15
+  numberOfProjectiles: 5
+  sprayAngle: 2
   firingPoint: {fileID: 2060408912}
-  ammoMax: 9
+  ammoMax: 1000
   cooldownTimeSeconds: 0.12
   reloadCooldownTimeSeconds: 2
 --- !u!23 &668961527

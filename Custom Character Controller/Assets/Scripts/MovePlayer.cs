@@ -20,7 +20,7 @@ public class MovePlayer : MonoBehaviour
     private Vector3 input;
     private Vector3 move;
 
-    private float inertia = 15;
+    private readonly float inertia = 15;
     // private float airModifier = 0.05f;
 
 
@@ -38,7 +38,7 @@ public class MovePlayer : MonoBehaviour
 
         // check for normal angle to walk down inclines.
 
-        Ray rayDown = new Ray(transform.position, Vector3.down);
+        Ray rayDown = new(transform.position, Vector3.down);
         Physics.Raycast(rayDown, out RaycastHit hitData, 0.25f);
         float normalY = hitData.normal.normalized.y;
 
